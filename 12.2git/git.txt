@@ -1,0 +1,185 @@
+什么是git 
+
+git是一个开源的分布式版本控制系统工具，用于高效的管理大小项目代码
+
+git  特点
+* git是分布是的版本管理系统
+* git更多使用在*nix下
+* git更加安全，因为是分布式管理
+* git可以衍生更多的工作模式
+* 可以脱网操作，数据同步更快
+
+集中式 ： 代码集中管理，有一个中央服务器，每次更新都从中           央服务器下载最新内容
+分布式 ： 每个节点都保存完整的代码，没有中央服务器，节点           之间相互推送下载代码
+
+git安装
+
+sudo apt-get install git 
+
+配置工作环境   
+配置工具 ： git config
+
+配置级别
+
+* 系统配置 操作系统中所有用户都可以使用
+  
+  配置用户名
+    git  config  --system   user.name  Levi
+  
+  配置文件  /etc/gitconfig
+
+* 用户配置  使用用户所有项目都可使用
+  
+  配置email
+    git  config  --global  user.email  lvze@tedu.cn
+  配置文件
+    ~/.gitconfig 
+
+* 配置当前项目仓库
+  
+  配置编译器
+  git config  core.editor  vim
+ 
+  配置文件 .git/config
+
+
+仓库 ： 使用git生成的项目目录，可以通过git方便的进行操作。将需要使用git管理的项目代码放入目录即可管理
+
+仓库操作
+
+* 初始化仓库
+git init  
+
+* 查看当前工作分支状态
+git status
+
+* 将工作区内容同步到暂存区
+git add  files
+
+多个文件用空格隔开
+可以添加普通文件和目录
+* 表示所有文件
+
+* 从暂存区删除内容
+git rm --cached manage.py 
+
+* 将暂存区内容提交仓库
+git commit  -m "提交水果项目代码"
+
+需要 -m 后写提交说明
+
+* 查看提交日志
+git log
+git log  --pretty=oneline
+
+* 查看工作区文件与仓库区别
+git diff readme.txt
+
+* 回复误删文件
+git checkout manage.py
+
+* 从仓库删除文件
+git rm readme.txt
+git mv manage.py  static/
+
+操作后直接git  commit即可确认更改
+
+* 回到上一个版本
+git reset  --hard HEAD^
+
+几个^表示上几个版本
+
+* 回到指定的某个版本
+git reset  --hard 854ca76
+
+* 查看所有commit信息
+git reflog
+
+工作区操作
+
+* 放弃工作区修改
+ git checkout -- readme.txt
+
+* 创建临时保存工作区
+ 
+ git stash
+
+* 查看保存的工作区
+ git  stash list
+
+* 应用哪个工作区
+git stash apply stash@{0}
+
+删除工作区
+git  stash drop  stash@{0}
+git stash clear  ---》 全部清除
+
+分支
+
+查看当前分支
+git branch  
+前面的 * 表示当前正在工作分支
+
+创建分支
+git  branch  dev_Tom 
+
+切换分支
+git checkout  dev_Tom 
+
+创建并切换到
+git checkout  -b dev_Tom 
+
+合并分支
+git merge dev_Tom 
+
+删除分支
+git branch -d dev_Tom 
+
+如果没有合并，则必须用-D删除
+
+标签管理
+
+打标签
+git tag  v1.0
+git tag  v0.9  commit_id 
+
+查看标签
+git tag
+
+回复到某个标签版本
+git reset --hard  v1.0 
+
+
+远程仓库
+
+tarena@tedu:~$ mkdir gitrepo
+tarena@tedu:~$ chown tarena:tarena gitrepo
+tarena@tedu:~$ cd gitrepo/
+tarena@tedu:~/gitrepo$ git init --bare project.git
+tarena@tedu:~/gitrepo$ chown -R tarena:tarena project.git
+
+连接远程仓库
+git remote add origin tarena@127.0.0.1:/home/tarena/gitrepo/project.git
+
+git remote rm origin  删除远程主机
+
+推送分支到远程
+git push -u origin master
+
+从远程克隆项目
+git clone tarena@127.0.0.1:/home/tarena/gitrepo/project.git
+
+从远程拉去最新代码
+git pull 
+
+
+github    https://github.com
+是一个远程仓库
+
+从github拷贝项目
+git clone https://github.com/lvze0321/django_book.git
+
+
+git remote add origin https://github.com/lvze0321/AID1805.git
+
+git push -u origin master

@@ -1,0 +1,392 @@
+1.多选用in 模糊查询用Like 赋值用==
+country in ('蜀国','魏国') and name like '___' and sex ='男';
+
+2.1.null : 空值，必须用　is 或者 is not　去匹配！！
+　2.""　: 空字符串，用 = 或者 != 去匹配   ！！
+
+3.select * from t1 where meeting >(now() - interval 12minute);
+
+            不加s ！！！ 可以用and查 左右范围
+
+4.ASC 上升 DESC下降
+
+5.select from  来源
+   where  条件
+   group  分组
+   having  
+   order   排序
+   limit  限制
+
+6.limit 2,5 显示 3,4,5,6
+
+7.分页  
+   每页显示5条记录，显示第4页 
+         每页显示5（n）条记录，显示第4（m）页
+
+       第1页： limit 0,5  ## 1 2 3 4 5 
+       第2页： limit 5,5  ## 6 7 8 9 10       （2-1）*5
+       第3页： limit 10,5  ## 11 12 13 14 15  （m-1）*n
+       第4页： limit 15,5  ## 16 17 18 19 20 
+             
+    分页公式 limit （m-1）*n，n
+
+8.人在排列时 会比机器多一行   输入时候会少一行
+
+9.统计一下id，name两个字段分别有多少条记录
+       　select count(id),count(name) from sanguo;
+　　　　　　　　# 空值NULL不会被统计，空字符串""会被统计
+         select * from sanguo； 
+          #只有一条记录里面所有记录都是空null时才不被统计
+
+10.group by 之后的字段名必须要为select之后的字段名，如果select后的字段名和group by之后的字段不一致，则必须对该字段进行聚合处理（聚合函数） 
+
+11.where 排序只能处理表格中存在的元素，新生成的用having
+   1.having语句通常和group by语句联合使用，过滤由group by
+   语句返回的记录集
+   2.where只能操作表中实际存在的字段，having操作由聚合函数生成的显示列
+
+  having 必须排序  where必须挑选的是分组之前的
+
+12.select from group by having > order by desc limit 顺序
+
+13. 1.处理distinct 和from之间的所有字段，所有字段值必须全部相同才可以去重
+
+14.索引 MySQL的算法是 BTree    二分树
+          优点，  加快数据的减速速度    
+          缺点：  1.当对表中数据进行增加，修改，删除时索引需要动态维护，降低了数据的维护速度
+            2.索引需要   占用物理索引储存空间
+
+15. 2.删除主键
+    　　1.先删除自增长属性(modify)
+        alter table 表名 modify id int;
+      2.删除主键
+        alter table 表名　drop primary key;
+    3.在已有表中添加主键
+    　　alter table 表名 add primary key(字段名);
+    4.将主函数 添加自增长
+        alter table 表名 modify id int auto_increment;
+ 主键和自增长是独立的两个！！
+   
+     主键 添加删除   add/drop primary key..
+     自增长 添加删除 modify id int;
+
+16. 指定 自增长属性起始值
+     create table 表名（
+     id int primary key auto_increment,
+       ... ...
+     ）auto_increment=10000;
+
+17.数据导入
+
+ 4.操作步骤
+  　1.在数据库中创建对应的表
+create table userinfo(
+username char(20),
+password char(1),
+uid int,
+gid int,
+comment varchar(50),
+homedir varchar(50),
+shell varchar(50)
+);
+
+   2.将要导入的文件拷贝到数据库的默认搜索路径中
+    　1.查看数据库的默认搜索路径
+       show variables like "secure_file_priv";
+       /var/lib/mysql-files
+
+     2.sudo cp /etc/passwd /var/lib/mysql-files/
+  3.执行数据导入语句
+     load data infile "/var/lib/mysql-files/scoretable.csv"
+     into table score
+     fields terminated by ","
+     lines terminated by "\n";
+18.文件权限问题
+rwx  所有者对此文件权限
+r--  所属组其他用户对此文件权限
+r--  其他组的用户对此文件权限
+root   所有者
+root   所属组
+
+查看权限 ls -l
+更改权限 chmod +rw scoretable.csv
+
+1.sudo -i
+2.cd /var/lib/mysql-files
+3.chmod 666 scoretable.csv 
+4.excel文件转为csv文件
+ 打开excel表格 ->文件 ->另存为 ->*.CSV（逗号分隔）
+5.更改一个文件的字符编码
+用记事本/编辑器 打开，文件 -》另存为 -》选择编码
+
+select user,host from mysql.user 
+into outfile'/var/lib/mysql-files/user.txt'
+fields terminated by '   '
+lines terminated by '\n';
+
+show variables like 'secure_file_priv'  查找路径
+
+19.只复制表结构
+ create table 表名 select * from 表名 where False；
+
+20.嵌套查询（子查询）
+   select ... from 表名 where 字段名 运算符（select....）；
+
+21.多表查询
+     1.select 字段名列表 from 表1，表2；笛卡尔积（不加where）
+     2.select 字段名列表 from 表1，表2 where 条件；
+  
+22.连接查询
+　　1.内连接
+　　　　1.定义
+　　　　　　从表中删除与其他被连接的表中没有匹配到的行
+　　　　2.语法格式
+　　　　　　select 字段名列表　from 表１
+　　　　　　inner join 表２ on 条件　inner join 表３ on 条件；
+　　　　3.示例
+　　　　　　1.显示省市的详细信息
+        select sheng.s_name,city.c_name from sheng
+        inner join city 
+        on sheng.s_id = city.cfather_id;
+      2.显示省市县详细信息
+        select sheng.s_name,city.c_name,xian.x_name from sheng
+        inner join city on sheng.s_id=city.cfather_id
+        inner join xian on city.c_id=xian.xfather_id;
+      
+　　2.外连接
+　　　　1.左连接(left)
+　　　　　　1.定义
+　　　　　　　　以左表为主显示查询结果
+　　　　　　2.语法格式
+　　　　　　　　select 字段名列表　from 表１
+　　　　　　　　left join 表２　on 条件;
+      3.示例
+      　　1.以省表为主显示省市详细信息
+          select sheng.s_name,city.c_name from sheng
+          left join city
+          on sheng.s_id=city.cfather_id;
+        2.显示省市区详细信息，要求县全部显示
+　　　　　　　select sheng.s_name,city.c_name,xian.x_name from sheng
+　　　　　　　left join city on sheng.s_id=city.cfather_id
+　　　　　　　left join xian on city.c_id=xian.xfather_id;
+　　　　　　　right join xian on city.c_id=xian.xfather_id;
+        3.县市省市区详细信息，要求　市　全部显示出来
+          select sheng.s_name,city.c_name,xian.x_name from sheng
+          right join city on sheng.s_id=city.cfather_id
+          left join xian on city.c_id=xian.xfather_id;
+
+    2.右连接(right)
+      用法同左连接,以右表为主显示查询结果
+
+
+
+
+作业：
+1.把 /ect/passwd文件中内容导入到db3库下的user表
+tarena:x:1000:1000:tarena,,,:/home/terena:/bin/bash
+用户名：密码：UID号：GID号：用户描述：主目录：登录权限
+
+create table sheng(
+id int primary key auto_increment,
+s_id int,
+s_name varchar(15)
+)default charset=utf8;
+
+insert into sheng values
+(1, 130000, '河北省'),
+(2, 140000, '陕西省'),
+(3, 150000, '四川省'),
+(4, 160000, '广东省'),
+(5, 170000, '山东省'),
+(6, 180000, '湖北省'),
+(7, 190000, '河南省'),
+(8, 200000, '海南省'),
+(9, 200001, '云南省'),
+(10,200002,'山西省');
+
+
+2.
+
+
+
+23.外键
+ 
+ 　3.案例
+　　　　表１、缴费信息表(财务)
+　　　　　　学号　 姓名    班级   　缴费金额
+　　　　　　　1   唐伯虎　　AID01  28000
+       2   点秋香　　AID01  20000
+    
+    表２、学生信息表(班主任)
+      学号　　姓名　 　　缴费金额
+      　1   唐伯虎　　　28000
+       2　　　点秋香   20000
+       3   祝枝山   22000
+      create table jftab(
+      id int primary key,
+      name char(15),
+      class char(5),
+      money int
+      )default charset=utf8;
+      
+      insert into jftab values
+      (1,"唐伯虎","AID01",28000),
+      (2,"点秋香","AID01",20000),
+      (3,"祝枝山","AID01",22000);
+    2.创建学生信息表
+      create table bjtab(
+      stu_id int,
+      name char(15),
+      money int,
+      foreign key(stu_id) references jftab(id)
+      on delete cascade
+      on update cascade
+      );
+
+
+
+
+24.备份
+  mysqldump -uroot -p MOSHOU > /home/tarena/MOSHOU.sql
+  mysql -uroot -p 
+25.1.执行查询操作多的表使用myisam存储引擎(使用innodb浪费资源)    表级锁
+    2.执行写操作比较多的表使用innodb存储引擎 行级锁
+
+26.sql语句优化
+在select。where 。order。by常涉及的字段建立索引
+
+sql语句优化
+ 1.where条件判断尽量不使用 ！=，否则放弃索引全表扫描
+ 2.尽量避免使用null判断，否则放弃索引全表扫描
+ unique null null 是存在的
+  优化前：select id from t1 where id is null；
+  优化后：在id字段上设置默认值0，确保id字段没有null值
+
+ not null default 0
+ select id from t1 where id = 0;
+ 3.尽量避免用or来链接条件，否则放弃索引全表扫描
+  优化前：select di from t1 where id =10 or id =20;
+  优化后：
+      select id from t1 where id=10
+      union all
+      select id from t1 where id =20 ;
+ 4.模糊查询尽量避免使用前置%，否则放弃索引全表扫描
+   select name from t1 where name like "%c%";可以用后置%
+ 5.尽量避免使用in和not in ，否则放弃索引全表扫描
+   优化前：select id from t1 where id in (1,2,3,4);
+   优化后：...where id between 1 and 4;
+ 6.尽量避免使用*，用具体的字段代替*，不要返回用不到的任何字段
+27.
+  1.交互类型
+    python3：pymysql $ sudo pip3 install pymysql
+    python2: MySQLdb $ sudo pip install mysql-python
+  2.connect对象
+    1.创建与数据库链接的对象（调用connect（）方法）
+      conn = pymysql.connect(参数列表)
+      参数列表：
+      1.host：主机地址
+      2.port：端口3306
+      3.db  ：数据库名
+      4.passwd：密码
+      5.charset：编码方式，推荐使用utf8
+      6.user：用户名
+    示例：
+     conn = 
+     pymysql.connect(host='localhost',user='root',passwd='123456',db='db4',charset='utf8')
+
+pymysql.py
+
+class connect:
+    def __init__(self,参数，参数，...）：
+         self ...=
+    def fun1（self）：
+         ....
+
+Class Hello：
+    def __init__(self,...):
+       . ..
+    def  fun1(self):
+       ...   
+    def  fun2(self):
+       ...
+
+  2.连接对象（conn）的方法
+    1.close（）关闭连接
+    2.commit（）提交到数据库执行
+    3.rollback（）回滚
+    4.cursor（）创建游标对象，用于执行sql语句
+   3.游标对象
+     1.作用：执行sql语句
+     2.示例：cur = conn.cursor()
+             cur.execute('delete from sheng;)
+     3.常用方法
+       1.execute（SQL命令，[SQL语句补位元素]）执行SQL命令
+       2.fetchone（）获取结果集第一条记录
+       3.fetchmany（n）获取n条记录
+       4.fetchall（）获取所有记录
+       
+   4.pymysql使用流程
+    1.建立数据库连接conn
+    2.创建游标对象 cur = conn.cursor()
+    3.cur.execute('...')
+    4.提交：conn.commit()
+    5.关闭游标对象：cur.close()
+    6.断开连接：conn.close()
+
+11.ER模型（Entry-Relationship）
+  1.定义
+    实体-关系模型，用于数据库设计
+  2.三个概念
+    1.实体  矩形框
+    2.属性  椭圆形
+    3.关系  实体之间的关系
+      1.一对一关系（1:1）：老公对老婆
+      2.一对多关系（1：n）：父亲对孩子
+      3.多对多关系（m：n）：兄弟姐妹对兄弟姐妹
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

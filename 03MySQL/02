@@ -1,0 +1,384 @@
+day01回顾
+1.mysql特点
+　　1.关系型数据库
+　　2.跨平台
+  3.支持多种编程语言
+2.mysql的启动和连接
+  1.服务端启动
+    sudo /etc/init.d/mysql start|stop|restart|reload
+  2.客户端连接
+    mysql -h主机地址 -u用户名 [-p3306] -p密码  #[]可以有可以没有
+  3.注意
+    1.mysql中的数据是以文件的形式存储在数据库目录
+    　　/var/lib/mysql
+    2.关系型数据库的核心内容是　关系　即　二维表
+3.库的管理
+　　　.基本SQL命令
+　　1.创建库(指定字符集)
+　　　　create database 库名　default charset=utf8;
+  2.查看创建库的语句
+     show create datebase 
+     select database();
+     use 库名;
+     show tables;
+     drop database 库名;
+
+　　3.
+ 4.表的管理
+    create table 表名;
+    desc xxxx;
+    show create table xxxx;
+    drop table xxxx;
+
+查看表结构
+desc　表名;
+删除表
+drop table 表名;
+表记录的管理
+插入记录
+insert into 表名　values(),(),...;
+insert into 表名(字段名列表) values(),(),...;
+查询表记录
+select * from 表名;
+select 字段名１,字段名２,... from 表名;
+表字段管理
+添加add
+alter table 表名　add 字段名　数据类型;
+alter table 表名　add 字段名　数据类型 first;
+alter table 表名　add 字段名　数据类型 after 字段名;
+修改modify
+alter table 表名 modify 字段名　新数据类型
+删除drop
+alter table 表名　drop  字段名;
+表的重命名rename
+alter table 表名　rename 新表名
+1.数据类型
+  1.数据类型
+    1.数值类型
+      1.整型
+      　　1.int(4个字节)
+        2.tinyint(１个字节)有符号，无符号unsigned
+      2.浮点型
+        1.float()
+        2.double()
+        3.decimal(m+2个字节，最多显示２８个有效位)
+  2.字符类型
+  　　1.char  定长　浪费存储空间性能高
+    2.varchar　变长　不浪费存储空间　性能低
+  3.枚举类型
+    1.enum
+    2.set
+  4.日期时间类型
+"###############################################"
+"##                                           ##"
+"##                                           ##"
+"##    ###################################    ##"
+"##    ##..............##...............##    ##"
+"##    ##.......################........##    ##"
+"##    ##.............###...............##    ##"
+"##    ##...........#....#..............##    ##"
+"##    ##.........#.......#.............##    ##"
+"##    ##.......#..........#............##    ##"
+"##    ##.....#.............#...........##    ##"
+"##    ###################################    ##"
+"##                                           ##"
+"##                                           ##"
+"###############################################"
+路径：AIDCode/aid1803/AID1803/MySQL/day02/
+验证
+　　1.use MOSHOU;
+  2.show tables;
+  3.select * from hero;
+  4.select * from sanguo;
+
+
+day02笔记
+
+
+0.时间日期函数
+   日期时间运算
+      1.语法格式
+        select  * from 表名 where 字段名 运算符 （时间 - interval
+	  时间间隔单位）;
+	时间间隔单位：
+	  1day  |  2hour | 1minute |1year |3month
+	where id < 8
+	where meeting >（now() - interval 1 day );
+	                 现在时间   1天时间  =一天前的时间点
+
+    select * from t1 where meeting >(now() - interval 12minute);
+
+                               不加s ！！！ 可以用and查 左右范围
+
+1.字符类型的宽度和数值类型的区别的区别
+　　1.数值类型的宽度仅仅为显示的宽度，只用于select查询显示，和占用的存储空间大小无关，可用zerofill查看效果
+　　2.字符类型的宽度超过则无法存储
+2.where条件子句(配合查询、修改、删除操作)
+  1.语法格式(查找)
+  　　select * from 表名 where 条件;    #select * from t1 where id=2;
+3.表记录管理
+  1.删除表记录
+    1.delete from 表名 where 条件;
+    2.注意
+    　　delete语句后如果不加where条件子句，会将表中所有记录全部删除
+  2.更新表记录
+    1.update 表名 set 字段名１=值１，字段名２=值２，... where 条件;
+    2.注意
+    　　update语句后如果不加where条件子句会将表中所有记录全部更改
+　　3.
+    1.delete from hero;
+    2.
+      insert into hero values
+      (1,"曹操","男","魏国"),
+      (2,"小乔","女","吴国"),
+      (3,"诸葛亮","男","蜀国"),
+      (4,"貂蝉","女","东汉"),
+      (5,"赵子龙","男","蜀国"),
+      (6,"魏延","男","蜀国");
+  3.练习
+  　　1.查找所有蜀国人的信息
+      select * from hero where country='蜀国';
+    2.查找女英雄信息，只显示姓名、性别和国家
+      select name,sex,country from hero where sex='女';
+    3.把曹操的国际改为蜀国
+      update hero set country='蜀国' where country='魏国';
+    4.把魏延的性别改为女性，国籍改为　泰国
+      update hero set sex='女',country='泰国' where sex='男' and country='蜀国';
+    5.把id为２的记录的姓名改为司马懿，性别改为男　国家改为魏国
+????? update hero set country='魏国',sex='男',name='司马懿'　where country='吴国' and sex='女' and name='小乔' id=2;    ??????????????????????????????????????
+    6.删除所有的泰国人
+      delete from hero where country="泰国"
+    7.删除所有的英雄记录
+      delete from hero;
+4.运算符操作
+　　1.数值比较&字符比较
+    1.数值比较运算符：=, !=, >, >=, <, <=
+    2.字符比较运算符：=, !=
+　　  3.练习
+　　  　　1.找出攻击力高于150的英雄的名字和攻击力值
+　　  　　2.找出防御力不等于100的英雄信息
+  2.逻辑比较
+    1.运算符:
+      and (两个或多个条件同时满足)
+      or  (两个或多个条件有一个满足就可以)
+    2.练习
+      1.找出攻击值大于200的蜀国的英雄的名字和攻击值
+    　　　　select name,gongji from sanguo where gongji>200 and country='蜀国';
+      2.将吴国英雄中攻击值为110的英雄的攻击值设置为100，防御值设置为60
+　　　　　　　　update sanguo set gongji=100,fangyu=60 where country="吴国" and gongji=110;
+　　3.范围内比较
+    1.运算符
+    　　between and、  in 、 not in
+    2.语法
+    　　between 值１ and 值２
+      in(值１,值２,...,值N)
+      not in(值１,值２,...,值N)
+　　　　3.练习
+　　　　　　1.查找攻击值在100-200之间的蜀国英雄信息
+
+　　　　　　2.找到蜀国和吴国以外国家的女英雄信息
+　　　　　　　　select * from sanguo where country not in('蜀国','吴国') and sex='女';
+　　　　　　3.找到编号为1 3 或 5 的蜀国英雄和貂蝉的编号、姓名和国籍
+　　　　　　　　select id,name,country from sanguo where (id in(1,3,5) and country="蜀国") or name="貂蝉";
+　　4.匹配空、非空
+    1.空值，必须用　is：　is null
+    2.非空： is not null
+    3.示例
+    　　1.查找姓名为NULL的蜀国女英雄信息
+        selete * from sanguo where name is null and country='蜀国' and sex="女"; 
+    　　2.查找姓名为""的英雄id、姓名和国家
+        selete id,name,country from sanguo where name="";
+
+　　　　4.注意
+　　　　　　1.null : 空值，必须用　is 或者 is not　去匹配！！
+　　　　　　2.""　: 空字符串，用 = 或者 != 去匹配   ！！
+　　　　5.模糊比较
+      1.where 字段名　like 表达式;
+      2.表达式
+        1. _ : 匹配的是单个字符
+        2. % : 匹配0到多个字符
+      3.示例
+      　　1.select name from sanguo where name like "_%_";
+          # 匹配名字中至少有两个字的
+        2.select name from sanguo where name like "%";
+          # NULL不会被统计
+        3.select name from sanguo where name like "___";
+          # 匹配名字为三个字的英雄
+        4.select name from sanguo where name like "赵%";
+        　　# 匹配姓赵的英雄
+　　　　6.正则匹配查询　regexp
+      1.where 字段名　regexp "正则表达式";
+      2.正则表达式符号:
+        ^ : 以．．．开头(任意)
+        $ : 以．．．结尾(任意)
+        . : 匹配任意一个字符
+        []: 包含．．．内容  
+            [0-9]:匹配带数字的
+            [a-z]:匹配带小写字母的
+            [A-Z]:匹配带大写字母的
+        * : 星号前面的字符出现0个或者多次　"^赵.*"
+      3.示例
+      　　1. select name from sanguo where name regexp "[0-9]";
+           # 匹配名字中带数字的
+        2. select name from sanguo where name regexp "^[0-9]";
+　　　　　　　　　　　# 匹配名字中以数字开头的记录
+        3. select name from sanguo where name regexp "[0-9]$";
+　　　　　　　　　　　# 匹配名字中以数字结尾的记录
+        4. select name from sanguo where name regexp "^司.*懿$";
+           # 匹配以　司　开头的，以　懿　结尾的记录
+        5. select name from sanguo where name regexp "^...$";
+           # ...
+5.SQL查询
+　　1.总结(执行顺序)
+   　3.select ... 聚合函数　from 表名 # 走聚合函数
+　   1. where ...
+　　　　2. group by ...(先分组,再聚合)
+    4. having ...(对查询结果进一步筛选)
+    5. order by ...(排序)
+    6. limit ...(限制显示查询记录的条数)
+    
+  2.order by
+    1.作用：给查询的结果进行排序
+    2.语法格式：order by 字段名 排序方式;
+    3.排序方式
+      1. ASC(默认):升序
+      2. DESC : 降序
+    4.示例
+      1.将英雄防御值从低到高排序
+      　　select * from sanguo order by fangyu asc;
+      2.将蜀国英雄按攻击值从高到低排序
+        select * from sanguo where country="蜀国" order by gongji desc;
+      3.将魏蜀两国的男英雄中名字为三个字的英雄按防御值升序排列　　　　　　　　　　　　　　　 　　order by ... 写在最后边
+　　　　　　　　select * from sanguo where country in("魏国","蜀国") 
+　　　　　　　　and sex='男' and name like "___" order by fangyu asc;
+　　3.limit(永远放在SQL语句的最后写)
+　　　　1.作用：限制显示查询记录的条数
+　　　　2.用法
+      1. limit n : -->显示n条记录
+      2.　limit m,n : -->从第(m+1)条开始，显示n条记录
+        　limit 4,5 :　显示 第５名-到第９名
+        　## m的值是从０开始计数的
+      3.示例
+        1.查找防御值倒数第二名到倒数第四名的蜀国英雄记录
+        　　select * from sanguo where country="蜀国" order by fangyu asc limit 1,3;
+        2.查找攻击值前３名且名字不为空值的蜀国英雄的姓名、攻击值和国家
+        　　select name,gongji,country from sanguo where　name is not null and country="蜀国" order by gongji desc limit 1,3;
+  4.聚合函数
+    1.分类
+      1.avg(字段名)　: 求字段的平均值
+      2.sum(字段名)　: 求和
+    　　3.max(字段名)　: 求最大值
+      4.min(字段名)　: 求最小值
+      5.count(字段名)　: 统计该字段记录的个数
+    2.示例
+    　　1.攻击力最强值是多少
+    　　　　select max(gongji) as best from sanguo;
+      2.统计一下id，name两个字段分别有多少条记录
+       　select count(id),count(name) from sanguo;
+　　　　　　　　# 空值NULL不会被统计，空字符串""会被统计
+        select count(*) from sanguo;
+    　 3.统计蜀国英雄中攻击值大于200的英雄的数量
+        select count(*) from sanguo where country="蜀国" and gongji>200;
+  5.group by(先分组，在聚合)
+    1.作用 : 给查询的结果进行分组
+    2.示例　
+     　1.统计sanguo表中一共有几个国家
+      　 select country from sanguo group by country;
+      2.计算所有国家的平均攻击力
+　　　　　　　　select country,avg(gongji) from sanguo group by country;
+　　　　　　　　执行过程：
+　　　　　　　　1.先分组(此时未去重) group by country
+       　2.再聚合(求每组的平均攻击值)
+        3.去重
+        3.查找所有国家中　英雄数量最多的　前两名　的国家名称及英雄数量
+　　　　　　　　　　select country,count(*) as numbers from sanguo group by country order by numbers desc limit 2;
+　　　　　　　　　　"--------------"
+          select country,count(*) from sanguo group by country order by count(*) desc limit 2;
+      3.注意
+      　　1.group by之后的字段名必须要为select之后的字段名
+      　　2.如果select之后的字段没有在group by语句之后，则必须要对该字段进行聚合处理(聚合函数)
+  6.having
+    1.作用 : 对查询的结果进行进一步筛选
+　　　　2.示例
+      1.找出平均攻击力大于105的国家的前两名，显示国家名称和平均攻击力
+      select country,avg(gongji) as pjgj from sanguo group by country 
+     　having pjgj > 105 order by pjgj desc limit 2;
+    3.注意
+     　1.having语句通常与group by语句联合使用，用来过滤由group by语句返回的记录集
+      2.having语句的存在弥补了where条件子句不能与聚合函数联合使用的不足，where操作的是表中实际存在的字段名，having操作的是聚合函数生成的显示列
+  7.distinct
+    1.作用 : 不显示字段的重复值
+    2.示例
+     　1.sanguo表中一共有多少个国家
+      　　select distinct country from sanguo;　
+      2.计算蜀国一共有多少个英雄
+      　　select count(distinct name) from sanguo　where country="蜀国";
+      3.注意
+        1.distinct处理的事distinct和from之间的所有字段，所有字段的值必须完全相同才可以去重
+        2.distinct不能对任何字段做聚合处理
+  8.查询表记录时可以做数学运算
+    1.运算符
+    　　+ - * / %
+    2.示例
+      1.查询时显示所有英雄的攻击力　* 10
+        select name,gongji*10,country from sanguo;
+6.约束
+　　1.作用
+　　　　1.为了保证数据的完整性、一致性、有效性，可以限制无效的数据插入到数据表中
+　　2.约束分类
+    1.默认约束(default)
+      1.作用
+      　　再插入记录时，如果不给该字段赋值，则使用默认值
+      2.格式
+      　　字段名　数据类型　default 默认值,
+    2.非空约束
+    　　1.作用
+    　　　　不允许该字段的值有空值NULL记录
+    　　2.格式
+    　　　　字段名　数据类型　not null,
+7.索引
+　　1.定义
+　　　　对数据库中表的一列或者多列的值进行排序的一种结构
+　　　　(MySQL中索引用Btree方式)
+　　2.索引的优点
+　　　　可以加快数据的检索速度
+  3.索引的缺点
+　　　　1.当对表中的数据进行增加、修改、删除的时候，索引需要动态维护，降低了数据的维护速度
+    2.索引需要占用物理存储空间(数据库目录/var/lib/mysql)
+  4.索引示例
+    1.运行 insert_.py 文件，插入100万条记录
+    2.开启性能分析
+      show variables like "%pro%";
+    　　set profiling = 1
+    3.执行查询语句
+      select name from t1 where name="lucy99999";
+    4.查看性能分析结果
+    　　show profiles;
+  　　5.在name字段创建索引
+  　　　　create index name on t1(name);
+  　　6.执行查询语句
+  　　　　select name from t1 where name="lucy99999"
+    7.查看性能分析结果
+    　　show profiles;
+    8.关闭性能分析
+      set profiling = 0;
+
+
+
+
+tarena@tedu:~$ sudo -i
+[sudo] tarena 的密码： 
+root@tedu:~# cd /var/lib/mysql
+
+
+
+      路径：AIDcode/aid1803/AID1803/MySQL/day02
+      压缩包
+      解压后
+      复制到虚拟机
+
+      库：indexdb
+      表：t1
+      select * from t1;
+
+update hero set sex='女',country='魏国' where sex='男',country='蜀国';

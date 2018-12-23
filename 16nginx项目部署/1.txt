@@ -1,0 +1,48 @@
+1.概念
+	1.Django项目(web应用)
+	浏览器->nginx服务器->uwsgi接口->Django项目
+	2.web服务
+		1.nginx
+			支持的并发量大
+		2.Apache
+			稳定性强
+
+				LNMP->Linux Nginx MySQL Python/PHP/Perl
+				LAMO->Linux Apache mysql python/PHP/Perl
+		3.uwsgi
+			是web服务器和web框架之间一种简单而通用的接口
+
+2.单项目部署(nginx+uwsgi+Django)
+	1.确保Django项目能够运行
+	2.安装nginx
+	3.安装uwsgi
+	4.部署
+		1.配置uwsgi(配置文件)
+			1.mkdir uwsgi
+			2.cd /home/tarena/uwsgi
+			3.vi 
+		2.配置nginx(配置文件)
+			1.
+			2.
+			3.
+
+		3.收集静态文件
+		4.uwsgi启动项目
+			uwsgi fruitday_uwsgi.ini
+3.多项目部署
+	1.uwsgi:每个项目需要单独创建uwsgi配置文件,选用不同端口
+	2.nginx配置文件,1个就可以,添加server{}
+		项目2:个人博客
+			浏览器访问端口:8202   			
+				/etc/nginx/sites-enabled/project_nginx.conf
+				#listen 8202
+			uwsgi和nginx通信端口:8002		
+				/home/tarena/uwsgi
+				touch boke_uwsgi.ini
+				#uwsgi配置 socket=127.0.0.1:8002
+			uwsgi占用端口:8082
+				/home/tarena/uwsgi
+				touch boke_uwsgi.ini
+					stats=127.0.0.1:8082
+					
+
